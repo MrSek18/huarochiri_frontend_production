@@ -1,0 +1,146 @@
+import React, { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+
+const Dashboard = ({ user, onLogout }) => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchUserData = useCallback(async () => {
+    try {
+      const authData = JSON.parse(localStorage.getItem("auth"));
+      const token = authData?.token;
+
+      if (!token) {
+        throw new Error("No hay token disponible");
+      }
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get("/user");
+
+      console.log("Respuesta completa de la API:", response.data); // Para depuración
+
+      // Asegurarnos de que la respuesta tiene la estructura esperada
+      if (!response.data?.user) {
+        throw new Error("Estructura de respuesta inesperada");
+      }
+
+      // Mapear los datos de la API al estado local
+      setUserData({
+        id: response.data.user.id,
+        name: response.data.user.name || 'Usuario',
+        email: response.data.user.email || 'No especificado',
+        role: response.data.user.role || 'Usuario estándar', // Campo opcional
+        moto_aportado: response.data.user.monto_aportado || 0, // Campo opcional
+        joinedDate: response.data.user.created_at || new Date().toISOString() // Campo opcional
+      });
+    } catch (error) {
+      console.error("Error al obtener datos:", error);
+      setError(error.message);
+      
+      if (error.response?.status === 401) {
+        onLogout();
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [onLogout]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Cargando dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-md">
+          <p className="font-bold">Error</p>
+          <p>{error}</p>
+          <button 
+            onClick={onLogout}
+            className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Volver al Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <header className="bg-white shadow-sm rounded-lg p-4 mb-6 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-800">Mi Dashboard</h1>
+        <button
+          onClick={onLogout}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+        >
+          Cerrar sesión
+        </button>
+      </header>
+
+      <main className="bg-white rounded-lg shadow-sm p-6">
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="bg-blue-100 p-3 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-blue-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">
+              ¡Bienvenido, {userData.name}!
+            </h2>
+            <p className="text-gray-500">{userData.email}</p>
+            <p className="text-sm text-gray-400">ID: {userData.id}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Información básica</h3>
+            <p>Rol: {userData.role}</p>
+            <p>Miembro desde: {new Date(userData.joinedDate).toLocaleDateString()}</p>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Acciones rápidas</h3>
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded mr-2">
+              Editar perfil
+            </button>
+            <button className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+              Configuración
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <footer className="mt-8 text-center text-gray-500 text-sm">
+        © {new Date().getFullYear()} Mi Aplicación
+      </footer>
+    </div>
+  );
+};
+
+export default Dashboard;

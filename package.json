@@ -1,0 +1,83 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "homepage": "./",
+  "description": "App de producción para Huarochirí",
+  "author": {
+    "name": "Sek",
+    "email": "mrsek0192@gmail.com"
+  },
+  "main": "public/electron.js",
+  "private": true,
+  "build": {
+    "appId": "com.huarochiri.produccion",
+    "productName": "HuarochiriProduccion",
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "build/**/*",
+      "public/electron.js",
+      "!node_modules/fsevents/**"
+    ]
+  },
+  "scripts": {
+    "react-start": "react-scripts start",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "build-frontend": "npm run build",
+    "electron": "wait-on http://localhost:3000 && electron .",
+    "electron-dev": "cross-env ELECTRON_START_URL=http://localhost:3000 concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && npx electron .\"",
+    "dev": "concurrently \"npm start\" \"npm run electron\"",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "ajv": "^8.12.0",
+    "axios": "^1.10.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.0.0",
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12",
+    "eslint": "^8.57.1",
+    "eslint-config-react-app": "^7.0.1",
+    "wait-on": "^8.0.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
