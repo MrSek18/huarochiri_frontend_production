@@ -68,7 +68,7 @@ const RegisterForm = () => {
       throw new Error("reCAPTCHA no está disponible");
 
     return await window.grecaptcha.execute(
-      process.env.REACT_APP_RECAPTCHA_SITE_KEY,
+      process.env.VITE_RECAPTCHA_SITE_KEY,
       { action: "register" }
     );
   };
