@@ -64,13 +64,20 @@ const RegisterForm = () => {
   }, [formData.password]);
 
   const getRecaptchaToken = async () => {
-    if (!window.grecaptcha?.execute)
+    if (!window.grecaptcha || !window.grecaptcha.execute) {
       throw new Error("reCAPTCHA no está disponible");
+    }
 
-    return await window.grecaptcha.execute(
-      process.env.VITE_RECAPTCHA_SITE_KEY,
-      { action: "register" }
-    );
+    return new Promise((resolve, reject) => {
+      window.grecaptcha.ready(() => {
+        window.grecaptcha
+          .execute(process.env.REACT_APP_RECAPTCHA_SITE_KEY, {
+            action: "register",
+          })
+          .then(resolve)
+          .catch(reject);
+      });
+    });
   };
 
   const validateField = (name, value) => {
