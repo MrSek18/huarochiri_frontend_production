@@ -141,7 +141,7 @@ const RegisterForm = () => {
 
       // Llamar API
       const response = await axios.post(
-        "https://huarochiri-backend-production.onrender.com//api/register",
+        "https://huarochiri-backend-production.onrender.com/api/register",
         payload,
         {
           headers: { "Content-Type": "application/json" },
