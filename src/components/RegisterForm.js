@@ -141,7 +141,6 @@ const RegisterForm = () => {
     try {
       // Obtener token reCAPTCHA
       const token = await getRecaptchaToken();
-      
 
       // Preparar payload
       const payload = { ...formData, "g-recaptcha-response": token };
