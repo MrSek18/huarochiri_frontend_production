@@ -9,7 +9,7 @@ import reportWebVitals from "./reportWebVitals";
 const isElectron = navigator.userAgent.toLowerCase().includes("electron");
 
 // Configuración global de Axios
-axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.headers.common["Accept"] = "application/json";
 
 // Interceptor para manejar autenticación

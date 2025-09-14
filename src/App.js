@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import axios from "axios";
 import LoginForm from "./components/LoginForm";
 import Dashboard from "./components/Dashboard";
 import RegisterForm from "./components/RegisterForm";
 import Configuracion from "./components/Configuracion";
 
-// Configuración global de Axios
+import axios from "axios";
+
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.headers.common["Accept"] = "application/json";
 
